@@ -18,9 +18,17 @@ body {
 	color: #dee2e6;
 	background-color: #212529;
 	font-family: 'Hind', sans-serif;
-	text-transform: uppercase;
+	/* text-transform: uppercase; */
 }
-
+.tyk4{
+	background-color: white !important;
+	margin-right: 0 !important;
+	box-shadow: none !important;
+	border: 1px solid rgba(124, 124, 124, 0.336);
+}
+.bi-arrow-clockwise{
+	color: black;
+}
 .container {
 	position: relative;
 	line-height: 0;
@@ -46,11 +54,13 @@ body {
 
 .current-score {
 	left: 10px;
+	
 }
 
 .high-score {
 	text-align: right;
 	right: 10px;
+	
 }
 
 .trigger {
@@ -82,39 +92,42 @@ body {
 
 canvas {
 	overflow:hidden;
-	border-radius: 50px;
+	border-radius: 10px;
 	box-shadow: 0 5px 25px rgba(0, 0, 0, 0.75);
 }
 
 /* responsive scaling, because pinball tables are tall */
 @media (min-height: 0px) {
 	.container { transform: scale(0.25); }
-	.container2 { transform: scale(0.25); }
+	/* .container2 { transform: scale(0.25); } */
 }
 @media (min-height: 400px) {
-	.container { transform: scale(0.5); }
-	.container2 { transform: scale(0.5); }
+	.container { transform: scale(0.4); }
+	.bestOchki,.ochki{
+		margin-bottom: 5px;
+	}
+	/* .container2 { transform: scale(0.5); } */
 	/* .container2Niz{
 		bottom: 20% ;
 	} */
 }
 @media (height: 414px) {
 	.container { transform: scale(0.5); }
-	.container2 { transform: scale(0.5); }
+	/* .container2 { transform: scale(0.5); } */
 	/* .container2Niz{
 		bottom: 90px ;
 	} */
 }
 @media (min-height: 600px) {
 	.container { transform: scale(0.55); }
-	.container2 { transform: scale(0.55); }
+	/* .container2 { transform: scale(0.55); } */
 	/* .container2Niz{
 		bottom: 90px ;
 	} */
 }
 @media (min-height: 800px) {
 	.container { transform: scale(0.7); }
-	.container2 { transform: scale(0.7); }
+	/* .container2 { transform: scale(0.7); } */
 	/* .container2Niz{
 		bottom: 70px;
 	} */
@@ -122,28 +135,52 @@ canvas {
 
 @media (min-height: 1200px) {
 	.container { transform: scale(1); }
-	.container2 { transform: scale(1); }
+
+	/* .container2 { transform: scale(1); } */
+}
+
+@media screen and (min-width:850px){
+	.current-score{
+		left: 30%;
+
+	}
+	.high-score{
+		right: 30%;
+	}
 }
 
 .vkui--sizeX-none{
 	background-color:#ffffff;
 }
+.redParent{
+	display: flex;
+	justify-content: center;
+}
+.red{
+    color:red;
+}
 .parenContainer{
-	width: 100%;
+	/* width: 100%; */
 }
 .container2Niz{
 	position: fixed;
 	left: 0;
 	bottom: 0;
 	width: 100%;
-	/* display: flex;
-	justify-content: space-evenly; */
+	display: flex;
+	justify-content: center;
 }
 
 .container2{
+	margin-top: 30px;
 	position: fixed;
-	left: 40%;
+	height: 70px;
+	/* left: 40%; */
 	top: 0;
+	left: 0;
+	width: 100%;
+	display: flex;
+	justify-content: center;
 }
 .vkuiAppRoot {
 	/* margin-left: -250px; */
@@ -160,10 +197,49 @@ canvas {
 }
 .ochki,.bestOchki{
 	font-size: 1.5vw;
+	color:#212529;
 }
 .current-score1,.high-score1{
 	font-size: 2.5vw;
+	color:#212529;
 }
+.modal-footer{
+	justify-content: center !important;
+}
+.parentBtn{
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	/* flex-wrap: wrap; */
+}
+.inputStyle{
+	border-radius: 10px 0 0 10px;
+}
+.btnStyle{
+	border-radius: 0 10px 10px 0;
+}
+.tyk{
+	box-shadow: 0 5px 25px rgba(0, 0, 0, 0.75);
+	margin: 10px;
+	padding: 10px;
+}
+.tyk2{
+	box-shadow: 0 5px 25px rgba(0, 0, 0, 0.75);
+	margin: 10px;
+	padding: 10px;
+}
+.menu{
+	box-shadow: 0 5px 25px rgba(0, 0, 0, 0.75);
+	margin: 10px;
+	padding: 10px;
+}
+.current-score{
+	padding-left: 20px;
+}
+.high-score{
+	padding-right: 20px;
+}
+
 .parentZagr{
 	width: 100%;
 	display: flex;
@@ -175,7 +251,46 @@ canvas {
 	opacity: 0;
 	/* display: none; */
 }
-
+.highRes{
+	color: #ff1361;
+	/* padding-left: 10px; */
+}
+.parentP{
+	display: flex;
+	justify-content: space-between;
+	/* box-shadow: 0 5px 25px rgba(0, 0, 0, 0.75); */
+	border: 1px rgba(139, 139, 139, 0.363) solid;
+	border-radius: 10px;
+	padding: 10px;
+	margin-bottom: 10px;
+}
+.pName,.pPoint{
+	margin-bottom: 0px;
+}
+.w{
+	width: 10px;
+}
+.wall{
+	margin-top: 10px;
+	width: 100%;
+	height: 7%;
+	box-shadow: 0 5px 25px rgba(0, 0, 0, 0.75);
+}
+.nachat{
+	width: 100%;
+	height: 100%;
+	box-shadow: 0 5px 25px rgba(0, 0, 0, 0.75);
+}
+.textRes{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+.tyk3{
+	display: flex;
+	justify-content: flex-end;
+	box-shadow:none;
+}
 @media screen and (max-width:600px){
 	.ochki,.bestOchki{
 		font-size: 4vw;
@@ -183,4 +298,84 @@ canvas {
 	.current-score1,.high-score1{
 		font-size: 4vw ;
 	}
+	.current-score,.high-score{
+		margin: 10px;
+	}
+	.animate-charcter{
+		font-size: 6vw !important;
+	}
+	.textRes{
+		font-size: 5vw;
+	}
+	.wall{
+		height: 10%;
+	}
 }
+
+
+
+
+
+
+
+
+
+
+.modal-header{
+	padding-bottom: 10px;
+}
+
+
+.col-md-12{
+    margin-bottom: 2px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    }
+    
+    .animate-charcter
+    {
+        font-size: 3.5vw ;
+       text-transform: uppercase;
+      background-image: -o-linear-gradient(
+        315deg,
+        #231557 0%,
+        #44107a 29%,
+        #ff1361 67%,
+        #fff800 100%
+      );
+      background-image: linear-gradient(
+        -225deg,
+        #231557 0%,
+        #44107a 29%,
+        #ff1361 67%,
+        #fff800 100%
+      );
+      background-size: auto auto;
+      background-clip: border-box;
+      background-size: 200% auto;
+      color: #fff;
+      background-clip: text;
+      text-fill-color: transparent;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      -webkit-animation: textclip 2s linear infinite;
+              animation: textclip 2s linear infinite;
+      display: inline-block;
+          
+    }
+    
+    @-webkit-keyframes textclip {
+      to {
+        background-position: 200% center;
+      }
+    }
+    
+    @keyframes textclip {
+      to {
+        background-position: 200% center;
+      }
+    }

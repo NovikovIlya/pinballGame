@@ -19,6 +19,8 @@
         "@vkontakte/vkui": "5.1.0",
         "babel-eslint": "^10.1.0",
         "bootstrap": "^5.2.3",
+        "bootstrap-icons": "^1.10.5",
+        "disallowed-word-filter": "^1.0.2",
         "eruda": "^2.4.1",
         "eruda-code": "^2.0.0",
         "eruda-dom": "^2.0.0",

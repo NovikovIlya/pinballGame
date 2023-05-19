@@ -26,7 +26,7 @@ const App = () => {
 	};
 
 	return (
-		<ConfigProvider>
+		<ConfigProvider appearance='light'>
 			<AdaptivityProvider>
 				<AppRoot>
 					<SplitLayout >

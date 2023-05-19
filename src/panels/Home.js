@@ -6,15 +6,17 @@ import MatterAttractors from 'matter-attractors'
 import { Link, useParams } from 'react-router-dom'
 import { useSetPoint } from '../Store.jsx';
 import { useReclama } from '../Store2';
-// import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Accordion from 'react-bootstrap/Accordion';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Panel, PanelHeader, Header, Group, Cell, Div, Avatar,Button } from '@vkontakte/vkui';
-import { collection, query, where,getDocs,setDoc ,doc  } from "firebase/firestore";
+import { Snackbar ,Panel, PanelHeader, Header, Group, Cell, Div, Avatar,Button,Input } from '@vkontakte/vkui';
+import { collection, query, where,getDocs,setDoc ,doc,orderBy,limit  } from "firebase/firestore";
+import { getDatabase, ref, orderByChild } from "firebase/database";
 import { initializeApp } from "firebase/app";
 import { getFirestore } from 'firebase/firestore';
 import Spinner from 'react-bootstrap/Spinner';
+import { Icon16Done } from '@vkontakte/icons';
+import { nanoid } from 'nanoid'
 
 const firebaseConfig = {
 	apiKey: "AIzaSyA_vN4xB-2UPviEZRZjlc3JaPNwXcx_wW0",
@@ -32,26 +34,75 @@ const firebaseConfig = {
   const db = getFirestore(app);
 
 const Home = ({ id, go, fetchedUser }) => {
-	bridge.send('VKWebAppCheckNativeAds', { ad_format: 'interstitial' })
-  .then((data) => {
-    if (data.result) {
-    } else {
-      console.log('Рекламные материалы не найдены.');
-    }
-  })
-  .catch((error) => { console.log(error); /* Ошибка */  });
+	history.pushState(null, null, null);
+	window.addEventListener("popstate", (event) => {
+		event.preventDefault();
+			if (document.querySelector('.alam').classList.contains('zero')){
+				if (visible === true){
+					console.log('trueModalka')
+					bridge.send('VKWebAppClose', {
+						status: 'success',
+						payload: {
+						  name: 'value'
+						}})
+						.then((data) => { 
+						  if (data.status) {
+							// Событие отправлено
+						  }
+						})
+						.catch((error) => {
+						  // Ошибка
+						  console.log(error);
+						});
+				}
+				// setOpen(false);
+				
+				
+					
+			}
+			else{
+				console.log('falseModalka')
 
-  function fooButtonClick(){
-  // Показать рекламу
-  bridge.send('VKWebAppShowNativeAds', { ad_format: 'interstitial' })
-    .then((data) => {
-      if (data.result) // Успех
-        console.log('Реклама показана');
-      else // Ошибка 
-        console.log('Ошибка при показе');
-    })
-    .catch((error) => { console.log(error); /* Ошибка */ });
-  }
+				
+				const setShow1 = ()=>{
+					setShow(true)
+				}
+				setTimeout(setShow1,100)
+				
+			}
+			
+		}
+	  );
+
+
+	const replaceDisallowedWords = require('disallowed-word-filter')
+	const myFilter = new replaceDisallowedWords({
+  		additionalWords: 'Привет,Хуй,Пизда, Пока', // Дополнительные запрещенные слова
+	})
+
+	bridge.send('VKWebAppCheckNativeAds', { ad_format: 'interstitial' })
+	.then((data) => {
+		if (data.result) {
+		} else {
+		console.log('Рекламные материалы не найдены.');
+		}
+	})
+	.catch((error) => { console.log(error); /* Ошибка */  });
+
+	function fooButtonClick(){
+	// Показать рекламу
+	bridge.send('VKWebAppShowNativeAds', { ad_format: 'interstitial' })
+		.then((data) => {
+		if (data.result) // Успех
+			console.log('Реклама показана');
+		else // Ошибка 
+			console.log('Ошибка при показе');
+		})
+		.catch((error) => { console.log(error); /* Ошибка */ });
+	}
+	
+	const [text, setText] = React.useState('');
+	const [snackbar, setSnackbar] = React.useState(null);
 	const [stop,setStop] = useState(false)
 	const [balli,setBalli] = useState(0)
 	const isPressed = useRef(false)
@@ -63,9 +114,12 @@ const Home = ({ id, go, fetchedUser }) => {
 	const [spinValue1,setSpinValue1] = useState(true)
 	const [visible,setVisible] = useState(true)
   	const [text2,setText2] = useState('')
+	const [conditionValue,setContditionValue] = useState(false)
+	const [modalka,setModalka] = useState(true)
+	const [proverka,setProverka] = useState(false)
 
 	const handleClose = () => {
-		
+		setModalka(false)
 		if (itemReclama === false){
 			async function pul(){
 				setSpinValue(true)
@@ -97,12 +151,14 @@ const Home = ({ id, go, fetchedUser }) => {
 			switchReclama()
 			setVisible(false)
 		}
+		
 
 	}
 	
-	function handleShow(breakpoint) {
-		setFullscreen(breakpoint);
+	function handleShow(breakout) {
+		setFullscreen(breakout);
 		setShow(true);
+		setModalka(true)
 	  }
 	
 
@@ -121,10 +177,11 @@ const Home = ({ id, go, fetchedUser }) => {
 		};
 		const COLOR = {
 			BACKGROUND: '#212529',
+			
 			// OUTER: '#495057',
 			OUTER: '#ffffff',
 			INNER: '#15aabf',
-			BUMPER: '#fab005',
+			BUMPER: '#86DFFF',
 			BUMPER_LIT: '#fff3bf',
 			PADDLE: '#e64980',
 			PINBALL: '#dee2e6'
@@ -157,6 +214,8 @@ const Home = ({ id, go, fetchedUser }) => {
 
 	
 		const init = () =>{
+			var myAudio = new Audio();
+			myAudio.src = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
 			
 			// engine (shared)
 			engine = Matter.Engine.create();
@@ -168,11 +227,13 @@ const Home = ({ id, go, fetchedUser }) => {
 			const knopka2 = document.querySelector('.tyk2')
 			knopka2.addEventListener('click',()=>{
 				engine.timing.timeScale = 1
+				// myAudio.play();
 			})
 
 			const menuKnopka = document.querySelector('.menu')
 			menuKnopka.addEventListener('click',()=>{
 				engine.timing.timeScale = 0
+				myAudio.pause();
 			})
 
 			// const liveText = document.querySelector('.livelive')
@@ -237,15 +298,23 @@ const Home = ({ id, go, fetchedUser }) => {
 				wall(140, 140, 20, 40, COLOR.INNER),
 				wall(225, 140, 20, 40, COLOR.INNER),
 				wall(310, 140, 20, 40, COLOR.INNER),
+				
+				
 	
-				// top bumpers (left, mid, right)
-				bumper(105, 250),
-				bumper(225, 250),
-				bumper(345, 250),
+				// top bumpers (left, mid, right)Круглешки
+				// bumper(105, 250),
+				bumper(165, 250),
+				bumper(285, 250),
+				// bumper(45, 250),
+				// bumper(345, 250),
 	
 				// bottom bumpers (left, right)
-				bumper(165, 340),
-				bumper(285, 340),
+				bumper(45, 340),
+				// bumper(45, 340),
+				bumper(225, 340),
+				// bumper(225, 430),
+				// bumper(285, 340),
+				bumper(405, 340),
 	
 				// shooter lane wall
 				wall(440, 520, 20, 560, COLOR.OUTER),
@@ -277,6 +346,7 @@ const Home = ({ id, go, fetchedUser }) => {
 		}
 	
 		function createPaddles() {
+			
 			// these bodies keep paddle swings contained, but allow the ball to pass through
 			leftUpStopper = stopper(160, 591, 'left', 'up');
 			leftDownStopper = stopper(140, 743, 'left', 'down');
@@ -384,6 +454,10 @@ const Home = ({ id, go, fetchedUser }) => {
 		}
 	
 		function createEvents() {
+			var myAudio3 = new Audio();
+			myAudio3.src = 'https://orteil.dashnet.org/cookieclicker/snd/clickb5.mp3'
+			var myAudio2 = new Audio();
+			myAudio2.src = 'https://codeskulptor-demos.commondatastorage.googleapis.com/pang/pop.mp3'
 			// events for when the pinball hits stuff
 			Matter.Events.on(engine, 'collisionStart', function(event) {
 				let pairs = event.pairs;
@@ -392,9 +466,11 @@ const Home = ({ id, go, fetchedUser }) => {
 						switch (pair.bodyA.label) {
 							case 'reset':
 								launchPinball();
+								myAudio2.play()
 								break;
 							case 'bumper':
 								pingBumper(pair.bodyA);
+								
 								break;
 						}
 					}
@@ -430,8 +506,10 @@ const Home = ({ id, go, fetchedUser }) => {
 			$('body').on('keydown', function(e) {
 				if (e.which === 37) { // left arrow key
 					isLeftPaddleUp = true;
+					myAudio3.play()
 				} else if (e.which === 39) { // right arrow key
 					isRightPaddleUp = true;
+					myAudio3.play()
 				}
 			});
 			$('body').on('keyup', function(e) {
@@ -444,15 +522,20 @@ const Home = ({ id, go, fetchedUser }) => {
 	
 			// click/tap paddle events
 			$('.left-trigger')
+				
 				.on('mousedown touchstart', function(e) {
 					isLeftPaddleUp = true;
+					myAudio3.play()
+					
 				})
 				.on('mouseup touchend', function(e) {
 					isLeftPaddleUp = false;
+					
 				});
 			$('.right-trigger')
 			.on('mousedown touchstart', function(e) {
 					isRightPaddleUp = true;
+					myAudio3.play()
 				})
 				.on('mouseup touchend', function(e) {
 					isRightPaddleUp = false;
@@ -466,13 +549,17 @@ const Home = ({ id, go, fetchedUser }) => {
 			Matter.Body.setAngularVelocity(pinball, 0);
 		}
 	
-		function pingBumper(bumper) {
+		const pingBumper = (bumper) =>{
+			var myAudio1 = new Audio();
+			myAudio1.src = 'https://codeskulptor-demos.commondatastorage.googleapis.com/pang/arrow.mp3'
+			myAudio1.play();
 			updateScore(currentScore + 10);
 	
 			// flash color
 			bumper.render.fillStyle = COLOR.BUMPER_LIT;
 			setTimeout(function() {
 				bumper.render.fillStyle = COLOR.BUMPER;
+				
 			}, 100);
 		}
 	
@@ -544,6 +631,7 @@ const Home = ({ id, go, fetchedUser }) => {
 	
 		// invisible bodies to constrict paddles
 		function stopper(x, y, side, position) {
+			
 			// determine which paddle composite to interact with
 			let attracteeLabel = (side === 'left') ? 'paddleLeftComp' : 'paddleRightComp';
 	
@@ -559,11 +647,14 @@ const Home = ({ id, go, fetchedUser }) => {
 					attractors: [
 						// stopper is always a, other body is b
 						function(a, b) {
+							
+
 							if (b.label === attracteeLabel) {
 								let isPaddleUp = (side === 'left') ? isLeftPaddleUp : isRightPaddleUp;
 								let isPullingUp = (position === 'up' && isPaddleUp);
 								let isPullingDown = (position === 'down' && !isPaddleUp);
 								if (isPullingUp || isPullingDown) {
+									
 									return {
 										x: (a.position.x - b.position.x) * PADDLE_PULL,
 										y: (a.position.y - b.position.y) * PADDLE_PULL,
@@ -578,14 +669,9 @@ const Home = ({ id, go, fetchedUser }) => {
 	
 		// contact with these bodies causes pinball to be relaunched
 		
-		var num = 0
+		
 		function reset(x, width) {
-			const tik = ()=>{
-				setLive()
-			}
-			setTimeout(tik,1000)
-			num = num + 1;
-			console.log(num)
+
 			setBalli((prev) => prev + 1)
 			return Matter.Bodies.rectangle(x, 781, width, 2, {
 				label: 'reset',
@@ -601,6 +687,145 @@ const Home = ({ id, go, fetchedUser }) => {
 		
 	};her()
 },[])
+
+	window.addEventListener('online',  updateOnlineStatus);
+	window.addEventListener('offline', updateOnlineStatus);
+	let condition
+	function updateOnlineStatus(event) {
+	condition = navigator.onLine ? "online" : "offline";
+	// document.body.className = condition;
+	
+	if (condition === 'offline'){
+		setContditionValue(true)
+	}
+	if (condition === 'online'){
+		setContditionValue(false)
+	}
+  
+}
+
+	const openBaseWithAction = () => {
+		if (snackbar) return;
+		setSnackbar(
+		<Snackbar
+			onClose={() => setSnackbar(null)}
+			// action="Поделиться"
+			// onActionClick={() => setText('Добавляем метку.')}
+			before={
+			<Avatar size={24} style={{ background: 'var(--vkui--color_background_accent)' }}>
+				<Icon16Done fill="#fff" width={14} height={14} />
+			</Avatar>
+			}
+		>
+			Игрок добавлен в таблицу лидеров!
+		</Snackbar>,
+		);
+	};
+
+	const openBaseWithActionMat = () => {
+		if (snackbar) return;
+		setSnackbar(
+		<Snackbar
+			onClose={() => setSnackbar(null)}
+			// action="Поделиться"
+			// onActionClick={() => setText('Добавляем метку.')}
+			// before={
+			// <Avatar size={24} style={{ background: 'var(--vkui--color_background_accent)' }}>
+			// 	<Icon16Done fill="#fff" width={14} height={14} />
+			// </Avatar>
+			// }
+		>
+			Имя игрока не должно содержать мата!
+		</Snackbar>,
+		);
+	};
+
+	const openBaseWithActionPusto = () => {
+		if (snackbar) return;
+		setSnackbar(
+		<Snackbar
+			onClose={() => setSnackbar(null)}
+			// action="Поделиться"
+			// onActionClick={() => setText('Добавляем метку.')}
+			// before={
+			// <Avatar size={24} style={{ background: 'var(--vkui--color_background_accent)' }}>
+			// 	<Icon16Done fill="#fff" width={14} height={14} />
+			// </Avatar>
+			// }
+		>
+			Поле не может быть пустым!
+		</Snackbar>,
+		);
+	};
+
+	const openBaseWithActionTimer = () => {
+		if (snackbar) return;
+		setSnackbar(
+		<Snackbar
+			onClose={() => setSnackbar(null)}
+			// action="Поделиться"
+			// onActionClick={() => setText('Добавляем метку.')}
+			// before={
+			// <Avatar size={24} style={{ background: 'var(--vkui--color_background_accent)' }}>
+			// 	<Icon16Done fill="#fff" width={14} height={14} />
+			// </Avatar>
+			// }
+		>
+			Можно слать запросы только раз в 10 секунд
+		</Snackbar>,
+		);
+	};
+
+	const openBaseWithActionDubl = () => {
+		if (snackbar) return;
+		setSnackbar(
+		<Snackbar
+			onClose={() => setSnackbar(null)}
+			// action="Поделиться"
+			// onActionClick={() => setText('Добавляем метку.')}
+			// before={
+			// <Avatar size={24} style={{ background: 'var(--vkui--color_background_accent)' }}>
+			// 	<Icon16Done fill="#fff" width={14} height={14} />
+			// </Avatar>
+			// }
+		>
+			Такое имя уже есть в базе. Придумайте уникальное имя!
+		</Snackbar>,
+		);
+	};
+
+	const openBaseWithActionUpdate = () => {
+		if (snackbar) return;
+		setSnackbar(
+		<Snackbar
+			onClose={() => setSnackbar(null)}
+			// action="Поделиться"
+			// onActionClick={() => setText('Добавляем метку.')}
+			// before={
+			// <Avatar size={24} style={{ background: 'var(--vkui--color_background_accent)' }}>
+			// 	<Icon16Done fill="#fff" width={14} height={14} />
+			// </Avatar>
+			// }
+		>
+			Список игроков обновлен!
+		</Snackbar>,
+		);
+	};
+
+	function wallPost(){
+		bridge.send('VKWebAppShowWallPostBox', {
+			message: 'Я набрал ' + text2 + ' очков в игре Пинбол!\n'  + '\n'  + 'Сможешь ли ты набрать больше? https://vk.com/app51647366' , 
+			attachment: 'https://vk.com/app51647366',
+			owner_id: fetchedUser.id
+		})
+		.then( (data) => {
+			// Запись отправлена на стену
+			console.log(`Идентификатор записи: ${data.post_id}`);
+		})
+		.catch( (e) => {
+			console.log("Ошибка!", e);
+		})
+	}
 
 	const switchReclama = useReclama((state)=>state.setPokazReclami)
 	const itemReclama = useReclama((state)=>state.pokazReclami)
@@ -619,7 +844,25 @@ const Home = ({ id, go, fetchedUser }) => {
 	useEffect(()=>{
 		vseslova()
 	},[])
+
+
 	
+
+
+   
+   function countdown2(){ // функция обратного отсчета
+	//    let x = 10
+	   x = x-10; 
+	   if (x<0){
+		   clearTimeout(timer); // таймер остановится на нуле
+		   console.log('Стоп таймер');
+	   }
+	   else {
+		   timer = setTimeout(countdown2, 1000);
+		   
+	   }
+   }
+//    countdown2()
 
 	
 
@@ -630,37 +873,108 @@ const Home = ({ id, go, fetchedUser }) => {
 		  const massiv3 = []
 		  querySnapshot.forEach((doc) => {
 			// doc.data() is never undefined for query doc snapshots
-			console.log('ssssss!',doc.id, " => ", doc.data());
+			
 			massiv3.push(doc.data())
-			console.log('mass',massiv3)
-			const massiv4 = massiv3
+			
+			const massiv4 = massiv3.sort((a,b)=> (+b.point) - (+a.point)  );
+			
 			
 			const zzz = ()=>{
 				setVseSlovaData(massiv4)
 			}
 			setTimeout(zzz,1000)
 			
-			console.log('vseSlova',VseSlovaData);
+			
 			
 		  });
 		}
 		haha()
 	  }
 
+	  const vseslova1=()=>{
+		const q  = query(collection(db, "pinball"))
+		async function haha(){
+		  const querySnapshot = await getDocs(q);
+		  const massiv3 = []
+		  querySnapshot.forEach((doc) => {
+			// doc.data() is never undefined for query doc snapshots
+			
+			massiv3.push(doc.data())
+			
+			const massiv4 = massiv3.sort((a,b)=> (+b.point) - (+a.point)  );
+			
+			
+			const zzz = ()=>{
+				setVseSlovaData(massiv4)
+			}
+			setTimeout(zzz,1000)
+			
+			
+			
+		  });
+		}
+		haha()
+		openBaseWithActionUpdate()
+	  }
+
 
 	const addData=()=>{
+		let timer; // пока пустая переменная
+		// стартовое значение обратного отсчета
+		var x = 10
+	   function countdown(){ // функция обратного отсчета
+		//    let x = 10
+		   x = x-1; 
+		   if (x<0){
+			   clearTimeout(timer); // таймер остановится на нуле
+			   console.log('Стоп таймер');
+			   setProverka(false)
+		   }
+		   else {
+			   timer = setTimeout(countdown, 1000);
+			   
+		   }
+	   }
+		
+		if (text1 === ''){
+			openBaseWithActionPusto()
+			return
+		}
+
+		if (proverka == true){
+			
+			if (x !== 0){
+				openBaseWithActionTimer()
+				return
+			}
+		}
+		
+		setProverka(true)
+		
+		if(myFilter.check(text1)){
+			
+			openBaseWithActionMat()
+			return
+		}
+		if (VseSlovaData.find(item=>item.name === text1)){
+			openBaseWithActionDubl()
+			return
+		}
 		async function mde (){
 			const fac = document.querySelector('.high-score1').innerText
-			await setDoc(doc(db, "pinball", text1), {
+			await setDoc(doc(db, "pinball", nanoid()), {
 				name: text1,
 				point: fac,
 
 			  });
 			setVseSlovaData([])
 			vseslova()
-			console.log(fac)
+			
 		}
 		mde()
+		setText1('')
+		openBaseWithAction()
+		countdown()
 
 	}
 
@@ -668,6 +982,7 @@ const Home = ({ id, go, fetchedUser }) => {
 	const handleChange = (e)=>{	
 		const textName = e.target.value
 		const textCorrect = textName.trim()
+
 		setText1(textCorrect)
 		console.log(textCorrect)
 	}
@@ -678,18 +993,7 @@ const Home = ({ id, go, fetchedUser }) => {
 
     return (
 	<>	
-		{/* <Link to='/top'>	
-			<button onClick={()=>{	
-				ochki()
-			}}>ТЫК</button>
-		</Link>
-		<button className='tyk' >ТЫК</button>
-		<button className='tyk2' >ТЫК2</button> 
-		<div>{Live}</div>
-		<Button variant="primary" onClick={handleShow}>
-        Launch demo modal
-      	</Button> */}
-	
+
 
 	  {spinValue&&
 	  <div>
@@ -705,94 +1009,134 @@ const Home = ({ id, go, fetchedUser }) => {
       {spinValue1===false&&
 	  <Modal fullscreen={fullscreen} show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
+          <Modal.Title>
+		  <div className="col-md-12 text-center">
+              <h3 className="animate-charcter"> Пинбол</h3>
+          </div>
+		  </Modal.Title>
         </Modal.Header>
         <Modal.Body>
 			
 		    <Accordion >
 				{text2>0&&
 					<Accordion.Item eventKey="0">
-					<Accordion.Header>Accordion Item #1</Accordion.Header>
+					<Accordion.Header>Добавьте себя в таблицу лидеров!</Accordion.Header>
 					<Accordion.Body>
-					<p>Добавьте себя в таблицу результатов!</p>
-					<input onChange={handleChange} type='text'/>
-					<p>Ваш лучший результат: {document.querySelector('.high-score1').innerText}</p>
-					<button onClick={addData}>Добавить данные</button>
-					<button onClick={()=>{
-						console.log('vseSlova111',VseSlovaData);
-					}}>Проверка</button>
+
+
+					<p className='textRes'><p>Ваш лучший результат: </p> 
+					<div className='w'></div>
+					<div className='highRes'>{document.querySelector('.high-score1').innerText}</div></p>
+					<div className='parentBtn'>
+						<Input placeholder='Введите имя' value={text1} maxLength={10} className='inputStyle' onChange={handleChange} type='text'/>
+						<Button className='btnStyle' onClick={addData}>
+							<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-arrow-right-short" viewBox="0 0 16 16">
+							<path fillRule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/>
+							</svg>
+						</Button>
+					</div>
+
 					</Accordion.Body>
 				</Accordion.Item>}
 				<Accordion.Item eventKey="1">
-					<Accordion.Header>Accordion Item #2</Accordion.Header>
+					<Accordion.Header>Топ 10 игроков</Accordion.Header>
 					<Accordion.Body>
-						{VseSlovaData.map(item=>{
+						<div className='tyk3'>
+							<Button onClick={vseslova1} className='tyk2 tyk4'>
+								<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className=" bi bi-arrow-clockwise" viewBox="0 0 16 16">
+								<path fillRule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+								<path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+								</svg>
+							</Button>
+						</div>
+						
+						{VseSlovaData.slice(0,10).map(item=>{
 							return(
-							<p>{item.name} {item.point}</p>)
+							<div className='parentP'>
+								<p className='pName'>{item.name} </p>
+								<p className='pPoint'>{item.point}</p>
+							</div>
+							)
 						})}
 					</Accordion.Body>
 				</Accordion.Item>
 			</Accordion>
+			<Button onClick={wallPost} className='wall'>
+			Опубликовать результат на стене!
+			</Button>
+			<Button onClick={()=>{
+				location.reload();
+			}} className='wall'>
+			Перезагрузить игру
+			</Button>
 		</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          {/* <Button variant="secondary" onClick={handleClose}>
             Close
-          </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Save Changes
+          </Button> */}
+          <Button className='nachat' variant="primary" onClick={handleClose}>
+            Играть
           </Button>
         </Modal.Footer>
+		{text && (
+          <Group>
+            <Div>{text}</Div>
+          </Group>
+        )}
+
+        {snackbar}
+
+		{conditionValue && 
+         <div className='redParent'>
+            <p className ='red'>Потеряна связь с интернетом</p>
+          </div>}
       </Modal>}
-		{/* <button onClick={liveAction}>узнать жизни</button>
-		<div>{balli}</div>
-		<h1>{Live}</h1> 
-		<h3 className='livelive'></h3> */}
+
 		
-		<div className={`${show? 'zero' : ''} ${visible? 'zero' : ''}`}>
+		<div className={`alam ${show? 'zero' : ''} ${visible? 'zero' : ''}`}>
 			<div className='parenContainer'>	
 				<div className='container2'>
-					{/* <button className='tyk' >Пауза</button>
-					<button className='tyk2' >Начать</button> 
 					
-					<Button className='menu' variant="primary" onClick={handleShow}>
-					Меню
-					</Button> */}
 					<div  className="score current-score">
-					<p className='ochki'>Очки</p>
-
-					<span className='current-score1'></span>
-				</div>
+						<p className='ochki'>Очки</p>
+						<span className='current-score1'></span>
+					</div>
+					<div className="score high-score">
+						<p className='bestOchki'>Лучший результат</p>
+						<span className='high-score1'></span>
+					</div>
 				</div>
 			</div>
 			<div className='parenContainer2Niz'>
 				<div className='container2Niz'>
-					<button className='tyk' >Пауза</button>
-					<button className='tyk2' >Начать</button> 
+					<Button className='tyk' >
+					<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-pause-fill" viewBox="0 0 16 16">
+					<path d="M5.5 3.5A1.5 1.5 0 0 1 7 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5zm5 0A1.5 1.5 0 0 1 12 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5z"/>
+					</svg>
+					</Button>
+
 					
 					<Button className='menu' variant="primary" onClick={handleShow}>
-					Меню
+					<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-gear-fill" viewBox="0 0 16 16">
+					<path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
+					</svg>
 					</Button>
+
+					<Button className='tyk2' >
+					<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-play-fill" viewBox="0 0 16 16">
+					<path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
+					</svg>
+					
+					</Button> 
 				</div>
 			</div>
 			
-
-			
 			<div className="container">
-
-				{/* <div  className="score current-score">
-					<p className='ochki'>Очки</p>
-
-					<span className='current-score1'></span>
-				</div> */}
-				<div className="score high-score">
-					<p className='bestOchki'>Лучший результат</p>
-
-					<span className='high-score1'></span>
-				</div>
 				<button className="trigger left-trigger"></button>
 				<button className="trigger right-trigger"></button>
 			</div>
 		</div>
+
   	</>)
   ;}
 
