@@ -26,6 +26,7 @@
         "eruda-dom": "^2.0.0",
         "firebase": "^9.22.0",
         "nanoid": "^4.0.2",
+        "nes-ui-react": "^0.2.15",
         "prop-types": "^15.7.2",
         "react": "^17.0.2",
         "react-bootstrap": "^2.7.4",

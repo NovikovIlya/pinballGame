@@ -4,7 +4,6 @@ import { View, ScreenSpinner, AdaptivityProvider, AppRoot, ConfigProvider, Split
 import '@vkontakte/vkui/dist/vkui.css';
 import {BrowserRouter, HashRouter,Route,Routes} from 'react-router-dom'
 import Home from './panels/Home';
-import Persik from './panels/Persik';
 import Top from './panels/Top';
 
 const App = () => {
