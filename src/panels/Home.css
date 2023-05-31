@@ -137,6 +137,7 @@ body {
 	border-top: 2px solid black
 }
 .playbtn{
+	font-size: 3vw !important;
 	z-index: 100;;
 	left:45%;
 	background-color: white;
@@ -188,6 +189,7 @@ body {
 	margin-right: 10px;
 }
 .trigger {
+	font-size: 3vw !important;
 	background-color: white;
 	width: 40% !important;
 	/* opacity: 0.5; */
@@ -259,6 +261,7 @@ body {
 }
 
 canvas {
+	image-rendering:auto !important;
 	overflow:hidden;
 	/* width: 100% !important; */
 	/* border-radius: 10px;
@@ -446,6 +449,7 @@ border-image-outset: 0 !important;
 	        justify-content: center !important;
 }
 .parentBtn{
+	margin-top: 22px;
 	width: 100%;
 	display: -webkit-box;
 	display: -ms-flexbox;
@@ -467,7 +471,16 @@ border-image-outset: 0 !important;
 	    -ms-flex-align: center;
 	        align-items: center;
 }
+.resText{
+	margin-bottom: 5px;
+	text-align: center;
+	font-size: 2.5vw !important;
+}
+.highRes{
+	font-size: 2.5vw !important;
+}
 .inputStyle{
+	display: none;
 	border-radius: 0 !important;
 	/* border-radius: 10px 0 0 10px; */
 	border-width: 4px !important;
@@ -559,10 +572,10 @@ border-image-outset: 0 !important;
 	-webkit-filter: sepia();
 	        filter: sepia();
 	-ms-interpolation-mode: nearest-neighbor;
-	    image-rendering: -webkit-optimize-contrast;
+	    /* image-rendering: -webkit-optimize-contrast;
 	    image-rendering: -moz-crisp-edges;
 	    image-rendering: -o-pixelated;
-	    image-rendering: pixelated;
+	    image-rendering: pixelated; */
 	margin-top: -37px;;
 }
 .pImg{
@@ -591,6 +604,9 @@ border-color: black !important;
 border-image-source: var(--pixel-borders-image-1-color-black-absolute) !important;
 border-image-width:1 !important;
 border-image-outset: 0 !important;
+}
+.parentP:hover{
+	cursor: var(--cursor-click-url),pointer;
 }
 .zvukPuk{
 	visibility: hidden;
@@ -702,6 +718,14 @@ border-image-outset: 0 !important;
 	height: 100%;
 	/* box-shadow: 0 5px 25px rgba(0, 0, 0, 0.75); */
 }
+.indexData{
+	font-size: 1.1vw !important;
+	margin: 8px;
+	width: 25px;
+}
+.pPoint{
+	font-size: 1.5vw !important;
+}
 .textRes{
 	display: -webkit-box;
 	display: -ms-flexbox;
@@ -748,8 +772,16 @@ border-image-outset: 0 !important;
 		font-size: 2vw ;
 	}
 }
+.btnStyle1{
+	display: flex;
+	align-items: center;
+}
 
 @media screen and (max-width:600px){
+	.indexData{
+		margin: 3px;
+		width: 25px;
+	}
 	.canva{
 		margin-left: 18px;
 	}
