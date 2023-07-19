@@ -24,6 +24,8 @@ const App = () => {
 		setActivePanel(e.currentTarget.dataset.to);
 	};
 
+	const [context, setContext] = useState(true);
+
 	return (
 		<ConfigProvider appearance='light'>
 			<AdaptivityProvider>
